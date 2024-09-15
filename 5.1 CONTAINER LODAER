@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+#define MAX_ITEMS 100
+
+void containerLoader(int weights[], int values[], int n, int capacity) {
+    int i, w;
+    int K[n + 1][capacity + 1];
+
+    // Build table K[][] using dynamic programming
+    for (i = 0; i <= n; i++) {
+        for (w = 0; w <= capacity; w++) {
+            if (i == 0 || w == 0)
+                K[i][w] = 0;
+            else if (weights[i - 1] <= w)
+                K[i][w] = (values[i - 1] + K[i - 1][w - weights[i - 1]] > K[i - 1][w]) ? 
+                           (values[i - 1] + K[i - 1][w - weights[i - 1]]) : K[i - 1][w];
+            else
+                K[i][w] = K[i - 1][w];
+        }
+    }
+
+    printf("Maximum value that can be loaded: %d\n", K[n][capacity]);
+}
+
+int main() {
+    int weights[] = {10, 20, 30};
+    int values[] = {60, 100, 120};
+    int capacity = 50;
+    int n = sizeof(values) / sizeof(values[0]);
+
+    containerLoader(weights, values, n, capacity);
+    return 0;
+}
